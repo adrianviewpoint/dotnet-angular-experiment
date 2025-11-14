@@ -1,0 +1,26 @@
+# Ensure shell scripts remain executable
+*.sh text eol=lf
+
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# .NET files
+*.cs text diff=csharp
+*.csproj text
+*.sln text
+
+# Angular/TypeScript files
+*.ts text
+*.js text
+*.json text
+*.html text
+*.css text
+*.scss text
+
+# Markdown
+*.md text
+
+# Documentation
+*.txt text
+README text
+LICENSE text

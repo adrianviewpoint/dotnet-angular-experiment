@@ -1,0 +1,19 @@
+@backend_HostAddress = http://localhost:5119
+
+### Health Check Endpoint
+GET {{backend_HostAddress}}/api/health
+Accept: application/json
+
+###
+
+### Echo Endpoint
+POST {{backend_HostAddress}}/api/echo
+Content-Type: application/json
+Accept: application/json
+
+{
+  "message": "Hello, World!",
+  "user": "Adrian"
+}
+
+###
