@@ -1,13 +1,14 @@
 
-<header style="padding: 16px; border-bottom: 1px solid #e5e7eb;">
-  <nav style="display: flex; gap: 16px;">
-    <a routerLink="/" style="text-decoration: none; color: inherit;">Home</a>
-    <a href="/api/health" target="_blank" style="color: #2563eb;">API: /api/health</a>
+
+<header class="p-4 border-b border-gray-200">
+  <nav class="flex gap-4">
+    <a routerLink="/" class="no-underline text-inherit">Home</a>
+    <a href="/api/health" target="_blank" class="text-blue-600">API: /api/health</a>
   </nav>
 </header>
-<main style="padding: 16px;">
+<main class="p-4">
   <router-outlet></router-outlet>
 </main>
-<footer style="padding: 16px; border-top: 1px solid #e5e7eb; margin-top: 32px; color: #6b7280;">
-  <small style="font-size: 0.875rem;">dotnet-angular-experiment</small>
+<footer class="p-4 border-t border-gray-200 mt-8 text-gray-600">
+  <small class="text-sm">dotnet-angular-experiment</small>
 </footer>
