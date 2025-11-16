@@ -1,0 +1,46 @@
+<section class="space-y-6">
+  <h1 class="text-2xl font-semibold">Dotnet & Angular Experiment</h1>
+  <p class="text-gray-700">This is a minimal Dotnet & Angular app to experiment with basic concepts.</p>
+
+  <!-- Auth (Better Auth + Prisma/Postgres) - intentionally commented out for now
+  <div class="rounded border border-gray-200 p-4 space-y-3">
+    <h2 class="text-lg font-medium">Auth (Better Auth + Prisma/Postgres)</h2>
+    <div class="flex flex-col gap-2 max-w-md">
+      <input class="border border-gray-300 rounded px-3 py-2" type="text" placeholder="Name" />
+      <input class="border border-gray-300 rounded px-3 py-2" type="email" placeholder="Email" />
+      <input class="border border-gray-300 rounded px-3 py-2" type="password" placeholder="Password" />
+      <div class="flex gap-2">
+        <button class="inline-flex items-center rounded bg-green-600 px-3 py-1.5 text-white hover:bg-green-700">Sign up</button>
+        <button class="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700">Sign in</button>
+        <button class="inline-flex items-center rounded bg-gray-700 px-3 py-1.5 text-white hover:bg-black">Sign out</button>
+      </div>
+    </div>
+    <div class="text-sm text-gray-700">
+      <div class="font-medium">Session</div>
+      <div>No session</div>
+    </div>
+  </div>
+  -->
+
+  <ul class="list-disc pl-5 space-y-2">
+    <li>
+      Backend API example:
+      <a href="/api/health" target="_blank" rel="noreferrer" class="text-blue-600">GET /api/health</a>
+    </li>
+    <li>
+      <div class="font-medium">Backend API example: POST /api/echo</div>
+      <div>
+        <button (click)="callEcho()" [disabled]="isCalling()" class="mt-2 inline-flex items-center rounded bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700 disabled:opacity-50">
+          {{ isCalling() ? 'Sending…' : 'Send sample POST' }}
+        </button>
+      </div>
+      <ng-container *ngIf="echoResult() as echo">
+        <pre class="bg-gray-100 p-3 mt-2 rounded text-sm overflow-auto">{{ echo }}</pre>
+      </ng-container>
+    </li>
+  </ul>
+
+  <p class="text-gray-700">
+    Auth is mounted at <code class="bg-gray-100 px-1 py-0.5 rounded">/api/auth/*</code>.
+  </p>
+</section>
