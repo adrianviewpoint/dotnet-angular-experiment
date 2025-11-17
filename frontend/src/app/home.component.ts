@@ -13,6 +13,10 @@ export class HomeComponent {
   echoResult = signal<string | null>(null);
   isCalling = signal(false);
 
+  // Auth state
+  authSession = signal<{ authenticated: boolean; user?: string | null } | null>(null);
+  authError = signal<string | null>(null);
+
   constructor(private http: HttpClient) {}
 
   callEcho() {
@@ -32,5 +36,40 @@ export class HomeComponent {
           this.isCalling.set(false);
         },
       });
+  }
+
+  signup(name: string, email: string, password: string) {
+    this.authError.set(null);
+    this.http.post('/api/auth/signup', { email, password }).subscribe({
+      next: () => this.session(),
+      error: err => this.authError.set(err?.error ? JSON.stringify(err.error) : String(err)),
+    });
+  }
+
+  signin(email: string, password: string) {
+    this.authError.set(null);
+    this.http.post('/api/auth/signin', { email, password }).subscribe({
+      next: () => this.session(),
+      error: err => this.authError.set(err?.error ? JSON.stringify(err.error) : String(err)),
+    });
+  }
+
+  signout() {
+    this.authError.set(null);
+    this.http.post('/api/auth/signout', {}).subscribe({
+      next: () => this.session(),
+      error: err => this.authError.set(err?.error ? JSON.stringify(err.error) : String(err)),
+    });
+  }
+
+  session() {
+    this.http.get<{ authenticated: boolean; user?: string | null }>('/api/auth/session').subscribe({
+      next: data => this.authSession.set(data),
+      error: err => this.authError.set(err?.error ? JSON.stringify(err.error) : String(err)),
+    });
+  }
+
+  ngOnInit() {
+    this.session();
   }
 }

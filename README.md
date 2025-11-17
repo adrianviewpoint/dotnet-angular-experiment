@@ -2,8 +2,8 @@
 
 A minimal app designed to be a clean base for experimenting with .NET and Angular.
 
-- .NET 10 Web API
-- Angular (frontend - to be added)
+- .NET 10 Web API (ASP.NET Core Identity + EF Core + PostgreSQL)
+- Angular 20 frontend (standalone components)
 - C#
 
 ## Quickstart (new contributors)
@@ -18,19 +18,28 @@ Prerequisites:
 Use the provided startup script:
 
 ```bash
+# Start database
+./start.sh db
+
 # Start backend only (default)
 ./start.sh
 
 # Or explicitly specify backend
 ./start.sh backend
 
-# When frontend is ready, start both in separate terminals
+# Start frontend only
+./start.sh frontend
+
+# Start DB, backend and frontend in separate terminals
 ./start.sh all
 ```
 
 The API will be available at:
 - HTTPS: `https://localhost:7055`
 - HTTP: `http://localhost:5119`
+
+The Angular app runs at:
+- `http://localhost:4200` (dev server)
 
 ### Manual Backend Setup
 
@@ -58,11 +67,15 @@ If you prefer to start manually:
 
 ### Testing the API
 
-You can test the endpoints using curl or any HTTP client:
+You can test the endpoints using VS Code's HTTP client or curl.
+
+Quick option (VS Code): open `backend/backend.http` and click "Send Request" on any block.
+
+Using curl:
 
 **Health Check:**
 ```bash
-curl http://localhost:5000/api/health
+curl http://localhost:5119/api/health
 ```
 
 Expected response:
@@ -76,7 +89,7 @@ Expected response:
 
 **Echo Endpoint:**
 ```bash
-curl -X POST http://localhost:5000/api/echo \
+curl -X POST http://localhost:5119/api/echo \
   -H "Content-Type: application/json" \
   -d '{"message": "Hello, World!", "user": "test"}'
 ```
@@ -92,6 +105,42 @@ Expected response:
 }
 ```
 
+## Database Setup (PostgreSQL)
+
+This project uses PostgreSQL for backend data storage. The recommended way to run the database locally is via Docker Compose.
+
+1. Start the PostgreSQL database:
+   ```bash
+   docker-compose up -d db
+   ```
+   This will start a local PostgreSQL instance with the following credentials:
+   - Host: localhost
+   - Port: 5432
+   - Database: angularexperiment
+   - Username: dev
+   - Password: dev
+
+2. The backend is preconfigured to use this database. Connection strings are in `backend/appsettings.Development.json` and `backend/appsettings.json`.
+
+3. Run Entity Framework Core migrations to set up the database schema (first time only):
+   ```bash
+   # optional if you don't have the tool yet
+   dotnet tool install --global dotnet-ef
+   
+   # apply migrations
+   cd backend
+   dotnet ef database update
+   ```
+
+4. Start the backend:
+   ```bash
+   ./start.sh backend
+   ```
+
+See `DB_SETUP.md` for more details.
+
+---
+
 ## Structure
 
 ### Backend (.NET Web API)
@@ -100,6 +149,7 @@ Expected response:
 backend/
 ├── Controllers/
 │   ├── EchoController.cs    # POST /api/echo - Echoes back JSON with timestamp
+│   ├── AuthController.cs    # /api/auth/* - Signup/Signin/Signout/Session
 │   └── HealthController.cs  # GET /api/health - Health check endpoint
 ├── Properties/
 │   └── launchSettings.json  # Development server configuration
@@ -112,14 +162,30 @@ backend/
 **API Endpoints:**
 - `GET /api/health` - Health check endpoint returning status and timestamp
 - `POST /api/echo` - Echo endpoint that returns received JSON body with timestamp
+- `POST /api/auth/signup` - Create user and sign in (cookie)
+- `POST /api/auth/signin` - Sign in with email/password (cookie)
+- `POST /api/auth/signout` - Sign out (clear cookie)
+- `GET /api/auth/session` - Returns `{ authenticated: boolean, user?: string }`
 
 **CORS Configuration:**
 - Configured to allow requests from `http://localhost:4200` (Angular default dev port)
 - Allows all headers and methods for development
 
-### Frontend (Angular - Coming Soon)
+### Frontend (Angular)
 
-The Angular frontend will be added in the `frontend/` directory.
+```
+frontend/
+├── src/app/
+│   ├── home.component.ts     # Calls /api/echo and auth endpoints
+│   └── home.component.html   # UI with signup/signin/signout + session display
+├── proxy.conf.json           # Proxies /api to http://localhost:5119
+└── package.json              # Scripts (npm start/build)
+```
+
+Development:
+- Start: `npm start` in `frontend/` (or `./start.sh frontend` from repo root)
+- The dev server runs on `http://localhost:4200`
+- Requests to `/api/*` are proxied to the backend at `http://localhost:5119`
 
 ## Scripts
 
@@ -127,9 +193,10 @@ The Angular frontend will be added in the `frontend/` directory.
 
 From the project root:
 
+- `./start.sh db` — Start the PostgreSQL database
 - `./start.sh` or `./start.sh backend` — Start the backend server
-- `./start.sh frontend` — Start the frontend server (when available)
-- `./start.sh all` — Start both backend and frontend in separate terminals
+- `./start.sh frontend` — Start the frontend server
+- `./start.sh all` — Start DB, backend and frontend in separate terminals
 - `./start.sh help` — Show help and available commands
 
 ### Backend
@@ -177,11 +244,3 @@ CORS is configured in `Program.cs` to allow the Angular frontend to communicate 
 
 To modify CORS settings, edit the `AddCors` configuration in `Program.cs`.
 
-## Next Steps
-
-- [ ] Set up Angular frontend
-- [ ] Add authentication/authorization
-- [ ] Add database integration (Entity Framework Core)
-- [ ] Add logging and monitoring
-- [ ] Add unit and integration tests
-- [ ] Add Docker support

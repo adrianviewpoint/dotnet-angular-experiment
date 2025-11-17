@@ -2,25 +2,34 @@
   <h1 class="text-2xl font-semibold">Dotnet & Angular Experiment</h1>
   <p class="text-gray-700">This is a minimal Dotnet & Angular app to experiment with basic concepts.</p>
 
-  <!-- Auth (Better Auth + Prisma/Postgres) - intentionally commented out for now
   <div class="rounded border border-gray-200 p-4 space-y-3">
-    <h2 class="text-lg font-medium">Auth (Better Auth + Prisma/Postgres)</h2>
+    <h2 class="text-lg font-medium">Auth (AspNetCore.Identity + EF/Postgres)</h2>
     <div class="flex flex-col gap-2 max-w-md">
-      <input class="border border-gray-300 rounded px-3 py-2" type="text" placeholder="Name" />
-      <input class="border border-gray-300 rounded px-3 py-2" type="email" placeholder="Email" />
-      <input class="border border-gray-300 rounded px-3 py-2" type="password" placeholder="Password" />
+      <input #nameInput class="border border-gray-300 rounded px-3 py-2" type="text" placeholder="Name" />
+      <input #emailInput class="border border-gray-300 rounded px-3 py-2" type="email" placeholder="Email" />
+      <input #passwordInput class="border border-gray-300 rounded px-3 py-2" type="password" placeholder="Password" />
       <div class="flex gap-2">
-        <button class="inline-flex items-center rounded bg-green-600 px-3 py-1.5 text-white hover:bg-green-700">Sign up</button>
-        <button class="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700">Sign in</button>
-        <button class="inline-flex items-center rounded bg-gray-700 px-3 py-1.5 text-white hover:bg-black">Sign out</button>
+        <button (click)="signup(nameInput.value, emailInput.value, passwordInput.value)" class="inline-flex items-center rounded bg-green-600 px-3 py-1.5 text-white hover:bg-green-700">Sign up</button>
+        <button (click)="signin(emailInput.value, passwordInput.value)" class="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700">Sign in</button>
+        <button (click)="signout()" class="inline-flex items-center rounded bg-gray-700 px-3 py-1.5 text-white hover:bg-black">Sign out</button>
       </div>
     </div>
-    <div class="text-sm text-gray-700">
+    <div class="text-sm text-gray-700 space-y-1">
       <div class="font-medium">Session</div>
-      <div>No session</div>
+      @if (authSession(); as s) {
+        @if (s.authenticated) {
+          <div>Authenticated as: <span class="font-mono">{{ s.user ?? '(unknown)' }}</span></div>
+        } @else {
+          <div>Not authenticated</div>
+        }
+      } @else {
+        <div>No session</div>
+      }
+      @if (authError()) {
+        <div class="text-red-600">{{ authError() }}</div>
+      }
     </div>
   </div>
-  -->
 
   <ul class="list-disc pl-5 space-y-2">
     <li>
@@ -34,9 +43,9 @@
           {{ isCalling() ? 'Sending…' : 'Send sample POST' }}
         </button>
       </div>
-      <ng-container *ngIf="echoResult() as echo">
+      @if (echoResult(); as echo) {
         <pre class="bg-gray-100 p-3 mt-2 rounded text-sm overflow-auto">{{ echo }}</pre>
-      </ng-container>
+      }
     </li>
   </ul>
 

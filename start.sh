@@ -88,6 +88,17 @@ start_frontend() {
     npm run start
 }
 
+# Function to start database (PostgreSQL via Docker Compose)
+start_db() {
+    print_info "Starting PostgreSQL database via Docker Compose..."
+    if ! command_exists docker; then
+        print_error "Docker not found. Please install Docker Desktop."
+        exit 1
+    fi
+    docker-compose up -d db
+    print_success "Database started (localhost:5432)"
+}
+
 # Function to start both
 start_all() {
     print_info "Starting backend and frontend..."
@@ -132,6 +143,9 @@ show_help() {
 
 # Main script logic
 case "${1:-backend}" in
+    db)
+        start_db
+        ;;
     backend)
         start_backend
         ;;
@@ -139,6 +153,7 @@ case "${1:-backend}" in
         start_frontend
         ;;
     all)
+        start_db
         start_all
         ;;
     help|--help|-h)

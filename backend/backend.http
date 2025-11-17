@@ -17,3 +17,39 @@ Accept: application/json
 }
 
 ###
+
+### Auth - Signup
+POST {{backend_HostAddress}}/api/auth/signup
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "test@example.com",
+  "password": "P@ssw0rd123!"
+}
+
+###
+
+### Auth - Signin
+POST {{backend_HostAddress}}/api/auth/signin
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "test@example.com",
+  "password": "P@ssw0rd123!"
+}
+
+###
+
+### Auth - Session
+GET {{backend_HostAddress}}/api/auth/session
+Accept: application/json
+
+###
+
+### Auth - Signout
+POST {{backend_HostAddress}}/api/auth/signout
+Accept: application/json
+
+###
